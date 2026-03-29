@@ -1,7 +1,11 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import prisma from '../lib/prisma';
 
-export async function getLinks(req: Request, res: Response) {
+export async function getLinks(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const userId = (req as any).userId;
 
@@ -11,12 +15,16 @@ export async function getLinks(req: Request, res: Response) {
     });
 
     res.json(links);
-  } catch {
-    res.status(500).json({ message: 'Erro interno do servidor' });
+  } catch (error) {
+    next(error);
   }
 }
 
-export async function createLink(req: Request, res: Response) {
+export async function createLink(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const userId = (req as any).userId;
     const { url, title, tagIds } = req.body;
@@ -34,12 +42,16 @@ export async function createLink(req: Request, res: Response) {
     });
 
     res.status(201).json(link);
-  } catch {
-    res.status(500).json({ message: 'Erro interno do servidor' });
+  } catch (error) {
+    next(error);
   }
 }
 
-export async function updateLink(req: Request, res: Response) {
+export async function updateLink(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const userId = (req as any).userId;
     const id = req.params['id'] as string;
@@ -62,12 +74,16 @@ export async function updateLink(req: Request, res: Response) {
     });
 
     res.json(link);
-  } catch {
-    res.status(500).json({ message: 'Erro interno do servidor' });
+  } catch (error) {
+    next(error);
   }
 }
 
-export async function deleteLink(req: Request, res: Response) {
+export async function deleteLink(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const userId = (req as any).userId;
     const id = req.params['id'] as string;
@@ -81,7 +97,7 @@ export async function deleteLink(req: Request, res: Response) {
     await prisma.link.delete({ where: { id } });
 
     res.status(204).send();
-  } catch {
-    res.status(500).json({ message: 'Erro interno do servidor' });
+  } catch (error) {
+    next(error);
   }
 }

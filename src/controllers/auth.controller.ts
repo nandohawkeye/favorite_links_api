@@ -1,9 +1,13 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import prisma from '../lib/prisma';
 
-export async function register(req: Request, res: Response) {
+export async function register(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const { email, password } = req.body;
 
@@ -20,11 +24,11 @@ export async function register(req: Request, res: Response) {
 
     res.status(201).json({ id: user.id, email: user.email });
   } catch (error) {
-    res.status(500).json({ message: 'Erro interno do servidor' });
+    next(error);
   }
 }
 
-export async function login(req: Request, res: Response) {
+export async function login(req: Request, res: Response, next: NextFunction) {
   try {
     const { email, password } = req.body;
 
@@ -46,6 +50,6 @@ export async function login(req: Request, res: Response) {
 
     res.json({ token });
   } catch (error) {
-    res.status(500).json({ message: 'Erro interno do servidor' });
+    next(error);
   }
 }

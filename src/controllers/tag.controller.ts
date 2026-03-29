@@ -1,18 +1,22 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import prisma from '../lib/prisma';
 
-export async function getTags(req: Request, res: Response) {
+export async function getTags(req: Request, res: Response, next: NextFunction) {
   try {
     const userId = (req as any).userId;
 
     const tags = await prisma.tag.findMany({ where: { userId } });
     res.json(tags);
-  } catch {
-    res.status(500).json({ message: 'Erro interno do servidor' });
+  } catch (error) {
+    next(error);
   }
 }
 
-export async function createTag(req: Request, res: Response) {
+export async function createTag(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const userId = (req as any).userId;
     const { name, color, icon } = req.body;
@@ -30,12 +34,16 @@ export async function createTag(req: Request, res: Response) {
     });
 
     res.status(201).json(tag);
-  } catch {
-    res.status(500).json({ message: 'Erro interno do servidor' });
+  } catch (error) {
+    next(error);
   }
 }
 
-export async function updateTag(req: Request, res: Response) {
+export async function updateTag(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const userId = (req as any).userId;
     const id = req.params['id'] as string;
@@ -53,12 +61,16 @@ export async function updateTag(req: Request, res: Response) {
     });
 
     res.json(tag);
-  } catch {
-    res.status(500).json({ message: 'Erro interno do servidor' });
+  } catch (error) {
+    next(error);
   }
 }
 
-export async function deleteTag(req: Request, res: Response) {
+export async function deleteTag(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
   try {
     const userId = (req as any).userId;
     const id = req.params['id'] as string;
@@ -72,7 +84,7 @@ export async function deleteTag(req: Request, res: Response) {
     await prisma.tag.delete({ where: { id } });
 
     res.status(204).send();
-  } catch {
-    res.status(500).json({ message: 'Erro interno do servidor' });
+  } catch (error) {
+    next(error);
   }
 }
