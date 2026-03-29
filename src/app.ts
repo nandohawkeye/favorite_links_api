@@ -8,6 +8,11 @@ import { errorHandler } from './middlewares/erroHandler';
 const app = express();
 
 app.use(express.json());
+
+app.get('/', (req, res) => {
+  res.json({ status: 'ok' });
+});
+
 app.use('/auth', authRoutes);
 app.use('/links', linkRoutes);
 app.use('/tags', tagRoutes);
