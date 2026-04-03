@@ -28,6 +28,7 @@ Configure as variáveis de ambiente:
 ```env
 DATABASE_URL=sua_url_do_postgresql
 JWT_SECRET=sua_chave_secreta
+ALLOWED_ORIGIN=sua_url_frontend
 ```
 
 Rode as migrations:
